@@ -76,7 +76,7 @@ namespace ZipFile
                     string appFolderPath = ApplicationData.Current.LocalFolder.Path;
                     StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", SourceFolder);
                     //StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", DestinationFolder);
-                   //  StorageFolder destinationFolder = await StorageFolder.GetFolderFromPathAsync(appFolderPath);
+                    //  StorageFolder destinationFolder = await StorageFolder.GetFolderFromPathAsync(appFolderPath);
 
                     //Gets the folder named TestFolder from Documents Library Folder  
                     StorageFolder sourceFolder = SourceFolder;
@@ -99,20 +99,19 @@ namespace ZipFile
             }
         }
 
-       
+
         private async Task ZipFolderContentsHelper(StorageFolder sourceFolder, ZipArchive archive, string sourceFolderPath)
         {
             IReadOnlyList<StorageFile> files = await sourceFolder.GetFilesAsync();
 
             foreach (StorageFile file in files)
             {
-                var path = file.Path.Remove(0, sourceFolderPath.Length);
-                ZipArchiveEntry readmeEntry = archive.CreateEntry(file.Path.Remove(0, sourceFolderPath.Length));
+                ZipArchiveEntry readmeEntry = archive.CreateEntry(file.Path.Remove(0, sourceFolderPath.Length + 1));
                 ulong fileSize = (await file.GetBasicPropertiesAsync()).Size;
                 byte[] buffer = fileSize > 0 ? (await FileIO.ReadBufferAsync(file)).ToArray()
                 : new byte[0];
 
-              
+
                 using (Stream entryStream = readmeEntry.Open())
                 {
                     await entryStream.WriteAsync(buffer, 0, buffer.Length);
